@@ -21,8 +21,9 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView timerTextView;
     private SeekBar timer;
-    boolean counterIsActive = false;
-    CountDownTimer countdown;
+    private boolean counterIsActive = false;
+    private CountDownTimer countdown;
+    private Button go;
     public void updateTimer(int secondsLeft){
 
         int minutes = (int) secondsLeft / 60;
@@ -36,6 +37,14 @@ public class MainActivity extends AppCompatActivity {
         timerTextView.setText(Integer.toString(minutes) + ":" + secondString);
     }
 
+    public void resetTimer(){
+        timerTextView.setText("0:30");
+        timer.setProgress(30);
+        countdown.cancel();
+        timer.setEnabled(true);
+        go.setText("GO!");
+        counterIsActive = false;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         timer = findViewById(R.id.set_timer);
         ImageView egg = findViewById(R.id.egg);
         timerTextView = findViewById(R.id.timer);
-        final Button go = findViewById(R.id.start);
+        go = findViewById(R.id.start);
 
         timer.setMax(600);
         timer.setProgress(30);
@@ -65,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onFinish() {
-                            timerTextView.setText("0:00");
+                            resetTimer();
                             MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.sound);
                             mediaPlayer.start();
                         }
@@ -73,12 +82,7 @@ public class MainActivity extends AppCompatActivity {
                     go.setText("Stop");
                 }
                 else{
-                    timerTextView.setText("0:30");
-                    timer.setProgress(30);
-                    countdown.cancel();
-                    timer.setEnabled(true);
-                    go.setText("GO!");
-                    counterIsActive = false;
+                    resetTimer();
                 }
             }
         });
@@ -86,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean user) {
                 updateTimer(progress);
-                Log.i("verbose", timerTextView.getText().toString());
             }
 
             @Override
